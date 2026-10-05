@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Everest AI Photo</title>
+
+<style>
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+}
+
+body{
+  font-family:Arial,Helvetica,sans-serif;
+  background:#09090b;
+  color:#fff;
+  min-height:100vh;
+}
+
+header{
+  padding:20px;
+  text-align:center;
+  border-bottom:1px solid #27272a;
+  background:#111113;
+}
+
+.logo{
+  font-size:28px;
+  font-weight:800;
+  letter-spacing:1px;
+}
+
+.logo span{
+  color:#8b5cf6;
+}
+
+.subtitle{
+  margin-top:6px;
+  color:#a1a1aa;
+  font-size:14px;
+}
+
+.container{
+  width:min(720px,94%);
+  margin:25px auto 50px;
+}
+
+.card{
+  background:#111113;
+  border:1px solid #27272a;
+  border-radius:20px;
+  padding:20px;
+  margin-bottom:18px;
+}
+
+h2{
+  font-size:18px;
+  margin-bottom:15px;
+}
+
+label{
+  display:block;
+  color:#d4d4d8;
+  font-size:14px;
+  margin:15px 0 7px;
+}
+
+input,textarea,select{
+  width:100%;
+  padding:13px;
+  border-radius:12px;
+  border:1px solid #3f3f46;
+  background:#18181b;
+  color:#fff;
+  outline:none;
+  font-size:15px;
+}
+
+textarea{
+  min-height:100px;
+  resize:vertical;
+}
+
+input:focus,textarea:focus,select:focus{
+  border-color:#8b5cf6;
+}
+
+.upload{
+  border:2px dashed #3f3f46;
+  border-radius:16px;
+  padding:25px 15px;
+  text-align:center;
+  cursor:pointer;
+}
+
+.upload:hover{
+  border-color:#8b5cf6;
+}
+
+.preview{
+  width:100%;
+  max-height:350px;
+  object-fit:contain;
+  border-radius:14px;
+  margin-top:15px;
+  display:none;
+  background:#000;
+}
+
+.grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+}
+
+button{
+  width:100%;
+  padding:15px;
+  border:0;
+  border-radius:14px;
+  font-size:16px;
+  font-weight:700;
+  cursor:pointer;
+}
+
+.generate{
+  background:linear-gradient(135deg,#8b5cf6,#ec4899);
+  color:#fff;
+}
+
+.generate:disabled{
+  opacity:.5;
+  cursor:not-allowed;
+}
+
+.status{
+  text-align:center;
+  color:#a1a1aa;
+  margin:15px 0;
+  min-height:20px;
+}
+
+.result{
+  display:none;
+}
+
+.result img{
+  width:100%;
+  border-radius:16px;
+  margin-top:10px;
+}
+
+.download{
+  display:block;
+  text-align:center;
+  text-decoration:none;
+  background:#27272a;
+  color:#fff;
+  padding:13px;
+  border-radius:12px;
+  margin-top:12px;
+}
+
+.footer{
+  text-align:center;
+  color:#71717a;
+  font-size:12px;
+  padding:20px;
+}
+
+@media(max-width:500px){
+  .grid{
+    grid-template-columns:1fr;
+  }
+
+  .card{
+    padding:16px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <div class="logo">EVEREST <span>AI PHOTO</span></div>
+  <div class="subtitle">Create your dream photo with AI</div>
+</header>
+
+<div class="container">
+
+  <div class="card">
+    <h2>📷 Upload Your Photo</h2>
+
+    <label class="upload">
+      <input
+        type="file"
+        id="photo"
+        accept="image/*"
+        hidden
+      >
+      <div>📤 Tap to upload your photo</div>
+      <div style="font-size:12px;color:#71717a;margin-top:7px;">
+        JPG / PNG
+      </div>
+    </label>
+
+    <img id="preview" class="preview">
+  </div>
+
+
+  <div class="card">
+
+    <h2>✨ AI Photo Settings</h2>
+
+    <label>👕 Outfit</label>
+    <select id="outfit">
+      <option>Myanmar Traditional Outfit</option>
+      <option>Modern Dress</option>
+      <option>Elegant Shirt & Pants</option>
+      <option>Jacket</option>
+      <option>Wedding Outfit</option>
+      <option>Casual Outfit</option>
+    </select>
+
+
+    <label>🚗 Vehicle</label>
+    <select id="vehicle">
+      <option>None</option>
+      <option>Car</option>
+      <option>Motorcycle</option>
+      <option>Bicycle</option>
+      <option>Scooter</option>
+    </select>
+
+
+    <label>🏷️ Vehicle Brand / Model</label>
+    <input
+      id="vehicleModel"
+      placeholder="Example: Honda PCX 160"
+    >
+
+
+    <label>🌄 Background</label>
+    <textarea
+      id="background"
+      placeholder="Example: Beautiful Myanmar city street at sunset"
+    ></textarea>
+
+
+    <label>💡 Lighting</label>
+    <select id="lighting">
+      <option>Cinematic Lighting</option>
+      <option>Natural Daylight</option>
+      <option>Golden Hour</option>
+      <option>Studio Lighting</option>
+      <option>Night Cinematic</option>
+      <option>Soft Portrait Lighting</option>
+    </select>
+
+
+    <label>📐 Aspect Ratio</label>
+
+    <div class="grid">
+      <select id="ratio">
+        <option value="1:1">1:1</option>
+        <option value="4:5">4:5</option>
+        <option value="3:4">3:4</option>
+        <option value="9:16">9:16</option>
+        <option value="16:9">16:9</option>
+      </select>
+
+      <select id="quality">
+        <option>High Quality</option>
+        <option>Ultra Quality</option>
+      </select>
+    </div>
+
+  </div>
+
+
+  <div class="card">
+
+    <h2>📝 Extra Prompt</h2>
+
+    <textarea
+      id="prompt"
+      placeholder="Describe anything else you want in the photo..."
+    ></textarea>
+
+  </div>
+
+
+  <button
+    class="generate"
+    id="generate"
+  >
+    ✨ GENERATE AI PHOTO
+  </button>
+
+  <div class="status" id="status"></div>
+
+
+  <div class="card result" id="result">
+
+    <h2>🎨 Your Result</h2>
+
+    <img id="resultImage">
+
+    <a
+      id="download"
+      class="download"
+      download="Everest-AI-Photo.png"
+    >
+      ⬇️ Download Image
+    </a>
+
+  </div>
+
+</div>
+
+<div class="footer">
+  © 2026 Everest AI Photo
+</div>
+
+
+<script>
+
+const photoInput = document.getElementById("photo");
+const preview = document.getElementById("preview");
+const generate = document.getElementById("generate");
+const statusText = document.getElementById("status");
+
+photoInput.addEventListener("change", function(){
+
+  const file = this.files[0];
+
+  if(!file) return;
+
+  const reader = new FileReader();
+
+  reader.onload = function(e){
+    preview.src = e.target.result;
+    preview.style.display = "block";
+  };
+
+  reader.readAsDataURL(file);
+});
+
+
+generate.addEventListener("click", async function(){
+
+  const file = photoInput.files[0];
+
+  if(!file){
+    statusText.textContent = "⚠️ Please upload a photo first.";
+    return;
+  }
+
+  generate.disabled = true;
+  statusText.textContent = "✨ Creating your AI photo...";
+
+  try{
+
+    const formData = new FormData();
+
+    formData.append("photo", file);
+
+    formData.append(
+      "outfit",
+      document.getElementById("outfit").value
+    );
+
+    formData.append(
+      "vehicle",
+      document.getElementById("vehicle").value
+    );
+
+    formData.append(
+      "vehicleModel",
+      document.getElementById("vehicleModel").value
+    );
+
+    formData.append(
+      "background",
+      document.getElementById("background").value
+    );
+
+    formData.append(
+      "lighting",
+      document.getElementById("lighting").value
+    );
+
+    formData.append(
+      "ratio",
+      document.getElementById("ratio").value
+    );
+
+    formData.append(
+      "quality",
+      document.getElementById("quality").value
+    );
+
+    formData.append(
+      "prompt",
+      document.getElementById("prompt").value
+    );
+
+
+    const response = await fetch(
+      "/api/generate",
+      {
+        method:"POST",
+        body:formData
+      }
+    );
+
+
+    if(!response.ok){
+      throw new Error("Generation failed");
+    }
+
+
+    const data = await response.json();
+
+
+    if(!data.image){
+      throw new Error("No image returned");
+    }
+
+
+    document.getElementById("resultImage").src =
+      data.image;
+
+    document.getElementById("download").href =
+      data.image;
+
+    document.getElementById("result").style.display =
+      "block";
+
+    statusText.textContent =
+      "✅ Your AI photo is ready!";
+
+
+  }catch(error){
+
+    console.error(error);
+
+    statusText.textContent =
+      "❌ Generation failed. Please try again.";
+
+  }finally{
+
+    generate.disabled = false;
+
+  }
+
+});
+
+</script>
+
+</body>
+</html>
